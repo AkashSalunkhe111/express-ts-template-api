@@ -1,4 +1,0 @@
-Post expense        POST /expense/:date         {userId,amount,item,type}
-Get expense
-for that date       GET /expense/:date
-

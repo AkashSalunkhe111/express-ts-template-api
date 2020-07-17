@@ -65,3 +65,5 @@ process.on("unhandledRejection", (err) => {
 });
 
 app.listen(PORT, () => console.log("Server Running"));
+
+module.exports = app;

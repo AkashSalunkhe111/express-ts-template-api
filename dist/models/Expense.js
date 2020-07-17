@@ -5,6 +5,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const ExpenseSchema = new mongoose_1.default.Schema({
+    user: {
+        type: mongoose_1.default.Types.ObjectId,
+        ref: "User",
+        required: true,
+    },
     date: {
         type: Date,
         required: [true, " Date cannot be empty"],
@@ -21,11 +26,6 @@ const ExpenseSchema = new mongoose_1.default.Schema({
         type: String,
         required: false,
     },
-});
-// Create save date
-ExpenseSchema.pre("save", function (next) {
-    this.date = new Date(this.date);
-    next();
 });
 const ExpenseModel = mongoose_1.default.model("Expense", ExpenseSchema);
 exports.default = ExpenseModel;

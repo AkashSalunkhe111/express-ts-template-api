@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postExpense = exports.getAllExpense = exports.testEndpoint = void 0;
+exports.getExpense = exports.postExpense = exports.getAllExpense = exports.testEndpoint = void 0;
 const expense_1 = require("../services/expense");
 const ErrorHandler_1 = __importDefault(require("../utils/ErrorHandler"));
 exports.testEndpoint = (req, res, next) => {
@@ -26,12 +26,27 @@ exports.getAllExpense = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
         const result = yield expense_1.getAllExpenseService();
         res.status(200).json({ success: true, result });
     }
-    catch (err) { }
+    catch (err) {
+        next(err);
+    }
 });
 exports.postExpense = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     try {
+        req.body.user = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
         yield expense_1.postExpenseService(req.body);
         res.status(200).json({ success: true });
+    }
+    catch (err) {
+        next(err);
+    }
+});
+exports.getExpense = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _b;
+    try {
+        req.body.user = (_b = req.user) === null || _b === void 0 ? void 0 : _b.id;
+        const result = yield expense_1.getExpenseService(req.params.id);
+        res.status(200).json({ success: true, result });
     }
     catch (err) {
         next(err);

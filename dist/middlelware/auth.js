@@ -12,23 +12,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const mongoose_1 = __importDefault(require("mongoose"));
-const connectDB = () => __awaiter(void 0, void 0, void 0, function* () {
-    const mongoUri = process.env.NODE_ENV === "test"
-        ? process.env.MONGO_URI_TEST
-        : process.env.MONGO_URI_DEV;
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const ErrorHandler_1 = __importDefault(require("../utils/ErrorHandler"));
+const User_1 = __importDefault(require("../models/User"));
+const protect = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const token = req.headers.authorization ? req.headers.authorization : null;
+    if (!token) {
+        return next(new ErrorHandler_1.default(401, "Not Authorized"));
+    }
+    console.log(process.env.JWT_SECRET);
     try {
-        const conn = yield mongoose_1.default.connect(mongoUri, {
-            useNewUrlParser: true,
-            useCreateIndex: true,
-            useFindAndModify: false,
-            useUnifiedTopology: true,
-        });
-        console.log(`MongoDB connected: ${conn.connection.host}`);
+        const decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
+        req.user = yield User_1.default.findById(decoded.id).select("-password");
+        next();
     }
     catch (err) {
-        console.log(`Error: - ${err.message}`);
+        console.log(err);
+        return next(new ErrorHandler_1.default(401, "Not Authorized"));
     }
 });
-exports.default = connectDB;
-//# sourceMappingURL=db.js.map
+exports.default = protect;
+//# sourceMappingURL=auth.js.map

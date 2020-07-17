@@ -4,7 +4,7 @@ import protect from "../middlelware/auth";
 
 const router = Router();
 
-router.route("/").get(getAllExpense).post(protect, postExpense);
+router.route("/").get(getAllExpense).post( postExpense);
 router.route("/:id").get(protect, getExpense);
 
 export default router;
